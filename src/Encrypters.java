@@ -1,122 +1,152 @@
-import java.util.Scanner;
+import java.util.Arrays;
 
 public class Encrypters{
 
+	// Private variables
 	private static final char[] decoderLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-	private static int[] decoderLetterPlacement; 
-	private static String word;
-	private static String key;
-	private static int keyInt;
-	private static int temp = 1;
+	private static int[] encryptionKey;
+	private static StringBuilder encrypted;
+	private static StringBuilder convertKey;
+	private static int keyIndex = 0;
 	private static int index = 0;
-	private static char keyChar;
+	private static boolean hit = false;
 
-	private static StringBuilder encryptedWord;
+	/**
+	 * Public constructor Encrypter takes a string and key. It then sets a StringBuilder to equal
+	 * the string which the constructor then modifies by converting all letters to uppercase and
+	 * removing all spaces.
+	 *
+	 * @param String encryptMe
+	 * @param String key
+	 *
+	 */
+	public Encrypters( String encryptMe, String key ){
 
-	public static void main( String[] args ){
+		encrypted = new StringBuilder( encryptMe.toUpperCase().replaceAll( "\\s", "" ) );
 
-		Scanner scan = new Scanner( System.in );
-		decoderLetterPlacement = new int[ 26 ];
+		System.out.printf( "\nFrom Encrypter:\n\n\tStringBuilder: %s\n\tKey: %s", encrypted, key );   // Debugging
+		System.out.println( "\n\tDecoder Letters: " + Arrays.toString( decoderLetters ) );			  // Debugging
 
-		System.out.println( "Enter a word to encrypt" );
-		word = scan.nextLine().toUpperCase().replaceAll( "\\s", "" );
-		
-		// Create decoderLetterPlacement
-		for( int i = 0; i < decoderLetterPlacement.length; i++ ){
-			
-			decoderLetterPlacement[ i ] = temp;
-			temp++;
-			
+		// Convert key to StringBuilder to group then convert the StringBuilder to a int array for proper indexes.
+		encryptionKey = new int[ key.length() ];
+
+		for( int i = 0; i < key.length(); i++ ){
+
+			if( Character.isLetter( key.charAt( i ) ) == true ){
+
+				encryptionKey[ i ] = key.toUpperCase().charAt( i ) - 64;
+
+			}else{
+
+				encryptionKey[ i ] = key.charAt( i ) - 48;
+
+			}   // End of if-else statement
+
 		}   // End of for-loop
-				
-		System.out.println( "Enter the key to be used" );
-		key = scan.nextLine().toUpperCase();
-		//temp = Integer.parseInt( key );
 
-		System.out.println( "\n" + word );
-		System.out.println( "Word length is " + word.length() );
-		System.out.println( "Key is " + key );
+		encryption( encrypted, encryptionKey );
 
+		System.out.printf( "\n\n\tThe encrypted word is %s\n", encrypted );   // Debugging
 
-		System.out.printf("\nTesting method\n");
-		encryptCeasar( word, key );
-		System.out.println( "Encrypted StringBuilder is " + encryptedWord );
-		
+	}   // End of constructor for Encrypter
 
-	}   // End of main method
+	/**
+	 * Private static method encryption takes either a word or phrase modified by the constructor
+	 * and using a user provided key, encrypts using a Vigenère cipher.
+	 *
+	 * @param StringBuilder encrypted
+	 * @param int[] key
+	 *
+	 * @return encrypted
+	 *
+	 */
+	private static StringBuilder encryption( StringBuilder encrypted, int[] key ){
 
-	// Encrypts word with key using a Ceasar encryption
-	public static String encryptCeasar( String encryptMe, String key ){
+		System.out.printf( "\n\t\t\tFrom encryption:\n\n\t\t\t\tEncryption Key: %s", Arrays.toString( encryptionKey ) );   // Debugging
 
-		encryptedWord = new StringBuilder( encryptMe );
+		for( int encryptionIndex = 0; encryptionIndex < encrypted.length(); encryptionIndex++ ){
 
-		// Try-catch used so user can input either a number or letter
-		try{
+			if( encryptionIndex == 0 && ( encrypted.charAt( 0 ) == '@' || encrypted.charAt( 0 ) == '#' ) ){
 
-			keyInt = Integer.parseInt( key );
-			index = keyInt;
+				encryptionIndex = 1;
 
-		} catch( NumberFormatException e){
+			}
 
-			keyChar = key.toUpperCase().charAt( 0 );
-			keyInt = keyChar - 64;
+			// Debugging
+			System.out.printf( "\n\t\t\t\t***********************************************************************************************" );   // Debugging
+			System.out.printf( "\n\t\t\t\tEncryption Index: %d", encryptionIndex );																// Debugging
+			System.out.printf( "\n\t\t\t\tDecoder Letters: %s", Arrays.toString( decoderLetters ) );											// Debugging
+			System.out.printf("\n\n\t\t\t\tEncrypting: %s using %s", encrypted.charAt( encryptionIndex ), key[ keyIndex ] );					// Debugging
 
-		}   // End of try-catch statement
+			while( !hit ){
 
-		System.out.printf( "Attempting to encrypt %s\n", encryptMe );
-		System.out.printf( "Numerical placement of key: %s is at %d\n\n", key, keyInt );
-		
-		for( int encryption = 0; encryption < encryptMe.length(); encryption++ ){
+				if( encrypted.charAt( encryptionIndex ) == decoderLetters[ index ] ){
 
-			temp = keyInt;
+					System.out.printf( "\n\n\t\t\t\t\t%s equals %s", encrypted.charAt( encryptionIndex ), decoderLetters[ index ] );						    // Debugging
+					System.out.printf( "\n\t\t\t\t\t%s equals %s", encrypted.charAt( encryptionIndex ), decoderLetters[ ( index + key[ keyIndex ] ) % 26 ] );   // Debugging
 
-			System.out.printf( "For-loop %d, temp is %d\n", encryption, temp );
-			System.out.print( "The letter being encypted is " + encryptMe.charAt( encryption ) + "\n" );
+					try{
 
-			for( int codex = 0; codex < decoderLetters.length; codex++ ){
+						// This is where the encryption happens
+						encrypted.setCharAt( encryptionIndex, decoderLetters[ ( index + key[ keyIndex ] ) % 26 ] );
 
-				System.out.printf( "\tFor-loop %d\n", codex );
+						System.out.printf( "\n\n\t\t\t\t\t%s\n", encrypted );   // Debugging
 
-				if( encryptMe.charAt( encryption ) == decoderLetters[ codex ] ){
+					}catch( ArrayIndexOutOfBoundsException e ){
 
-					System.out.printf( "\t\tLetter %d is at %d\n", encryption+1, codex+1 );
+						System.out.println( "\n\n\t\t\t\t\tError" );   // Debugging
 
-					while( temp >= 0 ){
+					}   // End of try-catch statement
 
-						System.out.printf("\t\t\t temp is %d\n", temp);
+					index = 0;
 
-						codex++;
-
-						if( codex == decoderLetters.length ){
-
-							codex = 0;
-
-						}
-
-						encryptedWord.setCharAt( encryption, decoderLetters[ codex ] );
-
-						System.out.printf( "\t\t\t\tCodex is at " + codex + "\n" );
-
-						temp--;
-
-					}
-
-					break;   // If found, end nested for-loop
+					hit = true;
 
 				}   // End of if-statement
 
-			}   // End of nested for-loop
-			
+				index++;
+
+			}   // End of while-loop
+
+			hit = false;
+
+			keyIndex++;
+
+			if( key.length != 1 ){
+
+				rotate();
+
+			}   // End of if-statement
+
+			if( keyIndex >= key.length ){
+
+				keyIndex = 0;
+
+			}   // End of if-statement
+
 		}   // End of for-loop
 
-		return encryptedWord.toString();
-		
-	}
+		System.out.printf( "\n\t\t\t\t***********************************************************************************************" );   // Debugging
+		System.out.println();																												// Debugging
 
-	public static void decryptCeasar( StringBuilder decryptMe ){
+		return encrypted;
 
+	}   // End of private static method encryption
 
+	/**
+	 * Private static method rotate takes the decoderLetters array and rotates it by one.
+	 *
+	 */
+	private static void rotate(){
 
-	}
+		for(  int i = decoderLetters.length-1; i > 0; i-- ){
 
-}   // End of class Encrypters
+			char temp = decoderLetters[ i ];
+			decoderLetters[ i ] = decoderLetters[ i-1 ];
+			decoderLetters[ i-1 ] = temp;
+
+		}   // End of for-loop
+
+	}   // End of private static void method rotate
+
+}   // End of public class Encrypter
