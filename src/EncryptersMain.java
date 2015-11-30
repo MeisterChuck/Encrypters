@@ -8,7 +8,7 @@ public class EncryptersMain{
     private static Encrypters encrypter;
 
     /**
-     * Main method is used for testing and debugging the Encrypter object.
+     * Main method is used for testing and debugging the Encrypters object.
      *
      */
     public static void main( String[] args ){
