@@ -27,5 +27,3 @@ public class EncryptersMain{
     }   // End of main method
 
 }   // End of public class EncryptersMain
-
-//Testing
