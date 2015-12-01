@@ -32,7 +32,7 @@ public class Encrypters{
 
 		for( int i = 0; i < key.length(); i++ ){
 
-			if( Character.isLetter( key.charAt( i ) ) == true ){
+			if( Character.isLetter( key.charAt( i ) ) ){
 
 				encryptionKey[ i ] = key.toUpperCase().charAt( i ) - 64;
 
@@ -149,4 +149,4 @@ public class Encrypters{
 
 	}   // End of private static void method rotate
 
-}   // End of public class Encrypter
+}   // End of public class Encrypters
