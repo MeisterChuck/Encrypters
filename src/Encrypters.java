@@ -19,7 +19,7 @@ public class Encrypters {
 	 */
 	public Encrypters( String encryptMe, String key ){
 
-		String ciphered;
+		StringBuilder ciphered = new StringBuilder();
 
 		formatEncryption( encryptMe );
 		formatKey( key );
@@ -31,11 +31,13 @@ public class Encrypters {
 		System.out.println( "-----------------------------" );
 		// End of debugging
 
-		ciphered = tempAt.toString() + encrypted.toString() + " " + tempHash.toString();
+		ciphered.append( tempAt.toString() );
+		ciphered.append( encrypted.toString() );
+		ciphered.append( " " + tempHash );
 
 		// Debugging
 		System.out.println( "-----------------------------" );
-		System.out.println( "The encrypted tweet is: " + ciphered );
+		System.out.println( "The encrypted tweet is: " + ciphered.toString() );
 		System.out.println( "-----------------------------" );
 		// End of debugging
 
@@ -89,7 +91,7 @@ public class Encrypters {
 
 		for( int i = 0; i < key.length(); i++ ){
 
-			encryptionKey[ i ] = key.toUpperCase().charAt( i ) - 64;
+			encryptionKey[i] = key.toUpperCase().charAt(i) - 64;
 
 		}
 
@@ -130,47 +132,43 @@ public class Encrypters {
 		int index = 0;
 		int keyIndex = 0;
 
-		for( int encryptionIndex = 0; encryptionIndex < encrypted.length(); encryptionIndex++ ){
+		for( int i = 0; i < encrypted.length(); i++ ){
 
 			while( !hit ){
 
-				if( encrypted.charAt( encryptionIndex ) == decoderLetters[ index ] ){
+				try {
 
-					try{
+					if (encrypted.charAt(i) == decoderLetters[index % 26]) {
 
-						// This is where the encryption happens
-						encrypted.setCharAt( encryptionIndex, decoderLetters[ ( index + key[ keyIndex ] ) %26 ] );
+						encrypted.setCharAt( i, decoderLetters[ ( index + key[ keyIndex ] ) % 26 ] );
 
-					}catch( ArrayIndexOutOfBoundsException e ){
+						hit = true;
 
-						e.printStackTrace();
+					}
 
-					}   // End of TRY-CATCH statement
+					index++;
 
-					index = 0;
-					hit = true;
+				}catch( ArrayIndexOutOfBoundsException e ){
 
-				}   // End of IF statement
+					e.printStackTrace();
 
-				index++;
+				}   // End of TRY-CATCH statement
 
 			}   // End of WHILE loop
 
+			try{
+
+				keyIndex = (keyIndex+1) % key.length;
+
+			}catch( ArrayIndexOutOfBoundsException e ){
+
+				e.printStackTrace();
+
+			}   // End of TRY-CATCH statement
+
+			index = 0;
 			hit = false;
-			keyIndex++;
-
-			// Determines if the encryption is Ceasar or Vigenère
-			if( key.length != 1 ){
-
-				rotate();
-
-			}   // End of IF statement
-
-			if( keyIndex >= key.length ){
-
-				keyIndex = 0;
-
-			}   // End of IF statement
+			rotate();
 
 		}   // End of FOR loop
 
