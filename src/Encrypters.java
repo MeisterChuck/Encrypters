@@ -168,7 +168,13 @@ public class Encrypters {
 
 			index = 0;
 			hit = false;
-			rotate();
+
+			// Determines if the encryption is Ceasar or Vigenère
+			if( key.length != 1 ) {
+
+				rotate();
+
+			}
 
 		}   // End of FOR loop
 
