@@ -1,5 +1,5 @@
 import java.util.Arrays;
-//test
+//Plan is to replace all the immutable strings with mutable integers to reduce memory
 public class Encrypters {
 
 	private static StringBuilder encrypted = new StringBuilder();
