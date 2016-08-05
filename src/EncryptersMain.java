@@ -1,34 +1,16 @@
 import java.util.Scanner;
 
-public class EncryptersMain{
+class EncryptersMain{
+    public static void main(String[] args){
+        Encrypters encryption;
+        Scanner scan = new Scanner(System.in);
+        String iOne, iTwo;
 
-    // Private variables
-    private static String word, key;
-    private static Scanner scan = new Scanner( System.in );
-    private static Encrypters encrypter;
-    String encrypted;
+        System.out.println("\nEnter words: ");
+        iOne = scan.nextLine();
+        System.out.println("Enter the key");
+        iTwo = scan.nextLine();
 
-    /**
-     * Main method is used for testing and debugging the Encrypters object.
-     *
-     */
-    public static void main( String[] args ){
-
-        System.out.println( "\nEnter tweet to be encrypted:" );
-        word = scan.nextLine();
-
-        System.out.println( "\nEnter the key to encrypt from:" );
-        key = scan.nextLine();
-
-        // Debugging
-        System.out.println( "-----------------------------" );
-        System.out.println( "Tweet: " + word );
-        System.out.println( "Key: " + key );
-        System.out.println( "-----------------------------" );
-        // End of debugging
-
-        encrypter = new Encrypters( word, key );
-
-    }   // End of main method
-
-}   // End of public class EncryptersMain
+        encryption = new Encrypters(iOne, iTwo);
+    }
+}
